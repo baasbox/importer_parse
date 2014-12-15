@@ -1,0 +1,55 @@
+{
+  "config": {
+    "log": "debug"
+  },
+  "source" : {
+      "file": { "path": "/Users/matteo/orientdb-community-1.7.10/temp/databases/parse/User_EXP.json", "lock" : true }
+  },
+  "extractor" : {
+   "json": {}
+  },
+  "transformers" : [
+	  
+  	{ "field": { "fieldName": "name",  "expression": "username"} }, 
+  	{ "field": { "fieldName": "username", "operation": "remove"} },
+	   
+    { "field": { "fieldName": "password",  "expression": "bcryptPassword"} },
+	{ "field": { "fieldName": "bcryptPassword", "operation": "remove"} },
+     
+	{ "field": { "fieldName": "profileName", "operation": "remove"} },
+    { "field": { "fieldName": "sessionToken", "operation": "remove"} },
+    { "field": { "fieldName": "score", "operation": "remove"} },
+    { "field": { "fieldName": "gender", "operation": "remove"} },
+    { "field": { "fieldName": "isFake", "operation": "remove"} },
+    { "field": { "fieldName": "RunCount", "operation": "remove"} },
+    { "field": { "fieldName": "lastName", "operation": "remove"} },
+    { "field": { "fieldName": "firstName", "operation": "remove"} },
+    { "field": { "fieldName": "email", "operation": "remove"} },
+    { "field": { "fieldName": "createdAt", "operation": "remove"} },
+    { "field": { "fieldName": "updatedAt", "operation": "remove"} },
+	{ "field": { "fieldName": "objectId", "operation": "remove"} },
+	{ "field": { "fieldName": "roles", "operation": "add"} },
+	
+	{ "field": { "fieldName": "status", "expression": "'ACTIVE'"} },
+	
+	{ "merge": { "joinFieldName":"name", "lookup":"OUser.name" } },
+	
+	{ "field": { "fieldName":"@class", "expression":"'OUser'" } },
+	
+	
+  ],
+   "loader" : {
+       "orientdb": {
+         "dbURL": "plocal:/Users/matteo/baasbox-local/db/baasbox",
+         "dbUser": "admin",
+         "dbPassword": "admin",
+         "dbAutoCreate": true,
+         "tx": false,
+         "batchCommit": 1000,
+         "dbType": "document", 
+         "indexes": [
+           {"class":"OUser", "fields":["name:string"], "type":"UNIQUE_HASH_INDEX" }
+         ]
+       }
+     }
+}
