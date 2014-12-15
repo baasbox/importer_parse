@@ -1,0 +1,58 @@
+{
+  "config": {
+    "log": "debug"
+  },
+  "source" : {
+      "file": { "path": "/Users/matteo/orientdb-community-1.7.10/temp/databases/parse/User_EXP.json", "lock" : true }
+  },
+  "extractor" : {
+   "json": {}
+  },
+  "transformers" : [
+	  
+    { "merge": { "joinFieldName":"user.name", "lookup":"_BB_User.user.name" } },  
+  	
+  	{ "field": { "fieldName": "bcryptPassword", "operation": "remove"} },
+	     
+  	{ "field": { "fieldName": "profileName", "operation": "remove"} },
+
+    { "field": { "fieldName": "score", "operation": "remove"} },
+    { "field": { "fieldName": "gender", "operation": "remove"} },
+    { "field": { "fieldName": "isFake", "operation": "remove"} },
+    { "field": { "fieldName": "RunCount", "operation": "remove"} },
+    { "field": { "fieldName": "lastName", "operation": "remove"} },
+    { "field": { "fieldName": "firstName", "operation": "remove"} },
+    { "field": { "fieldName": "email", "operation": "remove"} },
+	
+   	{ "field": { "fieldName": "signupDate",  "expression": "createdAt"} }, 
+    { "field": { "fieldName": " _creation_date",  "expression": "createdAt"} }, 
+    { "field": { "fieldName": "createdAt", "operation": "remove"} },
+    { "field": { "fieldName": "updatedAt", "operation": "remove"} },
+  	{ "field": { "fieldName": "objectId", "operation": "remove"} },
+
+	
+	{ "field": { "fieldName":"@class", "expression":"'_BB_User'" } },
+		
+	
+	{ "link": { "linkFieldName": "user", "linkFieldType": "LINK", "joinFieldName":"username",
+                "lookup":"OUser.name", "unresolvedLinkAction":"CREATE"} },
+				
+				
+	{ "code": { "language": "javascript",
+				"code": "var x=new Date('2012-07-09T08:17:24.801Z'); print(x);"}
+    }				
+	
+				
+  ],
+   "loader" : {
+       "orientdb": {
+         "dbURL": "plocal:/Users/matteo/baasbox-local/db/baasbox",
+         "dbUser": "admin",
+         "dbPassword": "admin",
+         "dbAutoCreate": true,
+         "tx": false,
+         "batchCommit": 1000,
+         "dbType": "document"
+       }
+     }
+}
